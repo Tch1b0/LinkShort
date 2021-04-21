@@ -7,11 +7,18 @@ h1 {
 }
 button {
     font-size: large;
+    margin-top: 3px;
+}
+button:hover {
+    cursor: pointer;
 }
 input {
-    font-size: large;
+    height: 2em;
+    width: 23em;
+    font-size: larger;
 }
 
 .sideNote {
+    color: gray;
     font-size: small;
 }
