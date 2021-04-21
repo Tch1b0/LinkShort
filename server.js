@@ -1,9 +1,8 @@
 const express = require('express');
-const request = require("request");
 var app = express();
 
 var port = 5002;
-var links = {"test": "https://johannespour.de"};
+var links = {"17a76043": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"};
 
 
 app.use("/site", express.static("site/index.html"));
@@ -14,24 +13,16 @@ function validateLink(link) {
     if (!link.startsWith("http://") && !link.startsWith("https://")){
         link = `http://${link}`;
     }
-    request(link, (err, res, body) => {
-        try {
-            if(res.statusCode == 200 && !err){
-                return link;
-            } else {
-                return false;
-            }
-        } catch {
-            return false;
-        }
-    });
+    if(!link.includes(".")) {
+        return false;
+    }
+    return link
 }
 
 app.get("/create", (req, res) => {
     let link = req.query.link;
     link = validateLink(link);
-    console.log(link);
-    if (typeof(link) != String) {
+    if (link === false) {
         res.send({"short": null});
     }
     else if(Object.values(links).includes(link)) {
@@ -50,9 +41,14 @@ app.get("/links", (req, res) => {
 });
 
 app.get("/*", (req, res) => {
-    let url = req.url.slice(1);
-    if(Object.keys(links).includes(url)) {
-        res.writeHead(301, {Location: links[url]});
+    let url = req.url;
+    console.log(url)
+    if(url == "/"){
+        res.writeHead(301, {Location: "/site"});
+        res.send();
+    }
+    else if(Object.keys(links).includes(url.slice(1))) {
+        res.writeHead(301, {Location: links[url.slice(1)]});
         res.send();
     } else {
         res.send("URL does not exist");
