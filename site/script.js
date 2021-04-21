@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    $("button").click(() => {
+    $("#generate").click(() => {
         let link = $("#link").val();
         $.get("create", {"link": link}, (data) => {
             let url = data["short"]
