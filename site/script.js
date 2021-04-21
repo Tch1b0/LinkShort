@@ -8,7 +8,7 @@ $(document).ready(() => {
                 $("#res-link").html("");
             }else {
                 $("#res").text(`Your short is: ${url}`);
-                $("#res-link").html(`<a href="https://ls.johannespour.de/${url}">https://johannespour.de/${url}</a>`)
+                $("#res-link").html(`<a href="https://ls.johannespour.de/${url}">https://ls.johannespour.de/${url}</a>`)
             }
         });
     });
