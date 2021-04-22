@@ -2,12 +2,12 @@
 This is a Link Shortner made with the [express]("https://expressjs.com/de/") package in Javascript.
 
 ## How to use
-You can create shortcuts on [The main page](https://ls.johannespour.de/site) of the Project or you can make requestslike this:
+You can create shortcuts on [The main page](https://ls.johannespour.de/site) of the Project or you can make requests like this:
 ### Create shortcut
 Request:
 ```json
 method = "GET",
-url = "https://johannespour.de/create",
+url = "https://ls.johannespour.de/create",
 data = {"link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}
 ```
 Response:
