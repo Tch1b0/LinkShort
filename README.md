@@ -5,7 +5,6 @@ This is a Link Shortner made with the [express]("https://expressjs.com/de/") pac
 You can create shortcuts on [The main page](https://ls.johannespour.de/site) of the Project or you can use the API on your own like this:
 ### Create shortcut
 Make a `POST` request to `https://ls.johannespour.de` with the parameter `link` as the key and the link you want to short as a value.<br>
-Request:
 ```json
 method: "POST"
 url: "https://ls.johannespour.de/create"
