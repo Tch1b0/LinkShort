@@ -12,7 +12,7 @@ data: {"link": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}
 ```
 Example request with [cURL](https://de.wikipedia.org/wiki/CURL):
 ```bash
-curl -X POST -d "link=https://www.youtube.com/watch?v=dQw4w9WgXcQ" https://ls.johannespour.de
+curl -X POST -d "link=https://www.youtube.com/watch?v=dQw4w9WgXcQ" https://ls.johannespour.de/create
 ```
 Response:
 ```json
