@@ -6,8 +6,8 @@ var port = 5002;
 var links = {"17a76043": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"};
 
 app.use("/site", express.static("site/index.html"));
-app.use("/style.css", express.static("site/style.css"))
-app.use("/script.js", express.static("site/script.js"))
+app.use("/style.css", express.static("site/style.css"));
+app.use("/script.js", express.static("site/script.js"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -18,7 +18,7 @@ function validateLink(link) {
     if(!link.includes(".")) {
         return false;
     }
-    return link
+    return link;
 }
 
 app.post("/create", (req, res) => {
@@ -64,5 +64,5 @@ app.get("/*", (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Now listening on http://localhost:${port}`)
+    console.log(`Now listening on http://localhost:${port}`);
 });
