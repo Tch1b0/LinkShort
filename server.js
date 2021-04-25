@@ -23,7 +23,7 @@ function validateLink(link) {
 
 app.post("/create", (req, res) => {
     try{
-        let link = req.body.link;
+        var link = req.body.link;
     } catch {
         res.writeHead(400);
         res.send("Parameter 'link' missing.");
@@ -43,6 +43,11 @@ app.post("/create", (req, res) => {
         links[name] = link;
         res.send({"short": name});
     }
+});
+
+app.get("/create", (req, res) => {
+    res.writeHead(301, {Location: "/site?info"});
+    res.send();
 });
 
 app.get("/links", (req, res) => {
