@@ -22,9 +22,16 @@ function validateLink(link) {
 }
 
 app.post("/create", (req, res) => {
-    let link = req.body.link;
+    try{
+        let link = req.body.link;
+    } catch {
+        res.writeHead(400);
+        res.send("Parameter 'link' missing.");
+        return;
+    }
     link = validateLink(link);
     if (link === false) {
+        res.writeHead(400);
         res.send({"short": null});
     }
     else if(Object.values(links).includes(link)) {
