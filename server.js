@@ -40,6 +40,9 @@ app.post("/create", (req, res) => {
     }
     else {
         let name = Math.random().toString(16).substr(2, 8);
+        while(Object.keys(links).includes(name)){
+            name = Math.random().toString(16).substr(2, 8);
+        }
         links[name] = link;
         res.send({"short": name});
     }
