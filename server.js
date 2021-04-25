@@ -1,13 +1,15 @@
 const express = require('express');
 var app = express();
+var bodyParser = require('body-parser');
 
 var port = 5002;
 var links = {"17a76043": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"};
 
-
 app.use("/site", express.static("site/index.html"));
 app.use("/style.css", express.static("site/style.css"))
 app.use("/script.js", express.static("site/script.js"))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 function validateLink(link) {
     if (!link.startsWith("http://") && !link.startsWith("https://")){
@@ -19,8 +21,8 @@ function validateLink(link) {
     return link
 }
 
-app.get("/create", (req, res) => {
-    let link = req.query.link;
+app.post("/create", (req, res) => {
+    let link = req.body.link;
     link = validateLink(link);
     if (link === false) {
         res.send({"short": null});
@@ -42,7 +44,6 @@ app.get("/links", (req, res) => {
 
 app.get("/*", (req, res) => {
     let url = req.url;
-    console.log(url)
     if(url == "/"){
         res.writeHead(301, {Location: "/site"});
         res.send();
