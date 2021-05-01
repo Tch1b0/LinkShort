@@ -8,7 +8,7 @@ services:
             - "5002:5002"
         restart: always
         volumes:
-            - server-logs:/logs
+            - server-logs:/app/logs
 
 volumes: 
     server-logs:
