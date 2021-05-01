@@ -6,4 +6,4 @@ COPY /site ./site
 
 RUN npm install express
 
-CMD ["node", "server.js", ">logs/LinkShort.log 2>&1"]
+CMD exec node server.js > logs/LinkShort.log 2>&1
