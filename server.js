@@ -4,7 +4,7 @@ var app = express();
 
 var port = 5002; // The port of the webserver
 var links = { "17a76043": "https://www.youtube.com/watch?v=dQw4w9WgXcQ" }; // The links are stored here
-var shortOwners = { "17a760431": "1107"}
+var shortOwners = { "17a76043": "1107"}
 
 app.use("/site", express.static("site/index.html"));     //
 app.use("/style.css", express.static("site/style.css")); // Static site
@@ -26,41 +26,58 @@ function validateLink(link) {
     return link.includes(".") ? link : false; 
 }
 
-app.put("/*", (req, res) => {
-    let short = req.url.slice(1);
-    try {
-        var token = req.body.token;
-        console.log(token);
-    } catch {
+function invalidParameter(obj, res) {
+    if (obj == undefined) {
         res.writeHead(400);
-        res.send("Parameter 'token' missing.");
-        return;
-    }
-    if (short.length == 0){
-        try {
-            short = req.body.short;
-        } catch {
-            res.writeHead(400);
-            res.send("Shortcut missing");
-            return;
-        }
+        res.send();
+        return true;
     } else {
-        if (token == shortOwners[short]) {
-            try {
-                var link = req.body.link;
-                console.log(link);
-            } catch {
-                res.writeHead(400);
-                res.send("Parameter 'link' missing.");
-                return;
-            }
-            links[short] = link;
-            res.send("?")
-        }
-        else {
-            res.writeHead(405);
-            res.send("Permission denied.");
-        }
+        return false;
+    }
+}
+
+app.patch("/*", (req, res) => {
+    let short = req.url.slice(1);
+
+    let token = req.body.token;
+    if (invalidParameter(token)) return;
+
+    if (short.length == 0){
+        short = req.body.short;
+        if (invalidParameter(short)) return;
+    }
+
+    if (token == shortOwners[short]) {
+        let link = req.body.link;
+        if (invalidParameter(link)) return;
+
+        links[short] = link;
+        res.send({short: short});
+    }
+    else {
+        res.writeHead(405);
+        res.send(/*"Permission denied."*/);
+    }
+});
+
+app.delete("/*", (req, res) => {
+    let short = req.url.slice(1);
+
+    let token = req.body.token;
+    if (invalidParameter(token)) return;
+
+    if (short.length == 0){
+        short = req.body.short;
+        if (invalidParameter(short)) return;
+    }
+
+    if (token == shortOwners[short]) {
+        delete links[short];
+        delete shortOwners[short];
+        res.send("Successful");
+    } else {
+        res.writeHead(405);
+        res.send();
     }
 });
 
@@ -86,11 +103,14 @@ app.post("/create", (req, res) => {
         res.send({ short: url });
     } else {
         let name = Math.random().toString(16).substr(2, 8);
+        let token = Math.random().toString(16).substr(2, 15);
         while (Object.keys(links).includes(name)) {
             name = Math.random().toString(16).substr(2, 8);
         }
+        while (shortOwners.inc)
+        shortOwners[name] = token,
         links[name] = link;
-        res.send({ short: name });
+        res.send({ short: name, token: token });
     }
 });
 
