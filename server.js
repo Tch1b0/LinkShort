@@ -26,6 +26,44 @@ function validateLink(link) {
     return link.includes(".") ? link : false; 
 }
 
+app.put("/*", (req, res) => {
+    let short = req.url.slice(1);
+    try {
+        var token = req.body.token;
+        console.log(token);
+    } catch {
+        res.writeHead(400);
+        res.send("Parameter 'token' missing.");
+        return;
+    }
+    if (short.length == 0){
+        try {
+            short = req.body.short;
+        } catch {
+            res.writeHead(400);
+            res.send("Shortcut missing");
+            return;
+        }
+    } else {
+        if (token == shortOwners[short]) {
+            try {
+                var link = req.body.link;
+                console.log(link);
+            } catch {
+                res.writeHead(400);
+                res.send("Parameter 'link' missing.");
+                return;
+            }
+            links[short] = link;
+            res.send("?")
+        }
+        else {
+            res.writeHead(405);
+            res.send("Permission denied.");
+        }
+    }
+});
+
 app.post("/create", (req, res) => {
     // Create a new shortcut
     
