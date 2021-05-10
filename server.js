@@ -36,20 +36,22 @@ function invalidParameter(obj, res) {
     }
 }
 
-app.patch("/*", (req, res) => {
-    let short = req.url.slice(1);
+app.put("/:short", (req, res) => {
+    let short = req.params["short"];
 
     let token = req.body.token;
-    if (invalidParameter(token)) return;
+    if (invalidParameter(token, res)) return;
 
     if (short.length == 0){
         short = req.body.short;
-        if (invalidParameter(short)) return;
+        if (invalidParameter(short, res)) return;
     }
 
     if (token == shortOwners[short]) {
         let link = req.body.link;
-        if (invalidParameter(link)) return;
+        if (invalidParameter(link, res)) return;
+        link = validateLink
+        if (!link && invalidParameter(undefined, res)) return;
 
         links[short] = link;
         res.send({short: short});
@@ -60,15 +62,15 @@ app.patch("/*", (req, res) => {
     }
 });
 
-app.delete("/*", (req, res) => {
-    let short = req.url.slice(1);
-
+app.delete("/:short", (req, res) => {
+    let short = req.params["short"];
+    console.log(short)
     let token = req.body.token;
-    if (invalidParameter(token)) return;
+    if (invalidParameter(token, res)) return;
 
     if (short.length == 0){
         short = req.body.short;
-        if (invalidParameter(short)) return;
+        if (invalidParameter(short, res)) return;
     }
 
     if (token == shortOwners[short]) {
@@ -85,13 +87,9 @@ app.post("/create", (req, res) => {
     // Create a new shortcut
     
     // Does the parameter "link" exist?
-    try {
-        var link = req.body.link;
-    } catch {
-        res.writeHead(400);
-        res.send("Parameter 'link' missing.");
-        return;
-    }
+    var link = req.body.link;
+    console.log(link)
+    if (invalidParameter(link, res)) return;
 
     // Check and correct the Link
     link = validateLink(link);
@@ -107,7 +105,6 @@ app.post("/create", (req, res) => {
         while (Object.keys(links).includes(name)) {
             name = Math.random().toString(16).substr(2, 8);
         }
-        while (shortOwners.inc)
         shortOwners[name] = token,
         links[name] = link;
         res.send({ short: name, token: token });
@@ -125,14 +122,15 @@ app.get("/links", (req, res) => {
     res.send(links);
 });
 
-app.get("/*", (req, res) => {
+app.get("/:short", (req, res) => {
     // Use a shortcut
-    let url = req.url;
-    if (url == "/") {
+    let short = req.params["short"];
+
+    if (short.length == 0) {
         res.writeHead(301, { Location: "/site" });
         res.send();
-    } else if (Object.keys(links).includes(url.slice(1))) {
-        res.writeHead(301, { Location: links[url.slice(1)] });
+    } else if (Object.keys(links).includes(short)) {
+        res.writeHead(301, { Location: links[short] });
         res.send();
     } else {
         res.send("URL does not exist");
