@@ -37,24 +37,28 @@ function invalidParameter(obj, res) {
 }
 
 app.put("/:short", (req, res) => {
+    // The variable 'short' is set to the shortcut entered in the URI
     let short = req.params["short"];
 
+    // Get the token from the json body
     let token = req.body.token;
-    if (invalidParameter(token, res)) return;
+    // Check if token is set
+    if (invalidParameter(token, res)) return; 
 
-    if (short.length == 0){
-        short = req.body.short;
+    if (short == undefined){
+        // If the short wasn't entered in the URI it may be in the body of the request
+        short = req.body.short; 
         if (invalidParameter(short, res)) return;
     }
 
     if (token == shortOwners[short]) {
-        let link = req.body.link;
+        let link = req.body.link; // Get the link from the body
         if (invalidParameter(link, res)) return;
-        link = validateLink
+        link = validateLink(link); // Link gets validated
         if (!link && invalidParameter(undefined, res)) return;
 
-        links[short] = link;
-        res.send({short: short});
+        links[short] = link; // Link is added to the 'links' object
+        res.send({short: short}); // send the short
     }
     else {
         res.writeHead(405);
@@ -63,20 +67,25 @@ app.put("/:short", (req, res) => {
 });
 
 app.delete("/:short", (req, res) => {
+    // The variable 'short' is set to the shortcut entered in the URI
     let short = req.params["short"];
-    console.log(short)
+
+    // Get the token from the json body
     let token = req.body.token;
+    // Check if token is set
     if (invalidParameter(token, res)) return;
 
-    if (short.length == 0){
+    if (short == undefined){
+        // If the short wasn't entered in the URI it may be in the body of the request
         short = req.body.short;
         if (invalidParameter(short, res)) return;
     }
 
     if (token == shortOwners[short]) {
+        // Remove the shortcut and the token from the 'links' and 'shortOwners' object
         delete links[short];
         delete shortOwners[short];
-        res.send("Successful");
+        res.send("Successful"); // Let the User know it was Successfull
     } else {
         res.writeHead(405);
         res.send();
@@ -88,7 +97,7 @@ app.post("/create", (req, res) => {
     
     // Does the parameter "link" exist?
     var link = req.body.link;
-    console.log(link)
+
     if (invalidParameter(link, res)) return;
 
     // Check and correct the Link
@@ -97,14 +106,23 @@ app.post("/create", (req, res) => {
         res.writeHead(400);
         res.send({ short: null });
     } else if (Object.values(links).includes(link)) {
+        // If shortcut already exists, send it
         let url = Object.keys(links).find((k) => links[k] === link);
         res.send({ short: url });
     } else {
         let name = Math.random().toString(16).substr(2, 8);
         let token = Math.random().toString(16).substr(2, 15);
+        
+        // Generate a new shortcut name while there is already one existing with the same name
         while (Object.keys(links).includes(name)) {
             name = Math.random().toString(16).substr(2, 8);
         }
+        // Generate a new token while the same token already exists
+        while (Object.values(shortOwners).includes(token)) {
+            token = Math.random().toString(16).substr(2, 15);
+        }
+
+        // Set token, link and shortcut
         shortOwners[name] = token,
         links[name] = link;
         res.send({ short: name, token: token });
