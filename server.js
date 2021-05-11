@@ -36,7 +36,7 @@ function invalidParameter(obj, res) {
     }
 }
 
-app.put("/:short", (req, res) => {
+app.put("/:short?*", (req, res) => {
     // The variable 'short' is set to the shortcut entered in the URI
     let short = req.params["short"];
 
@@ -66,7 +66,7 @@ app.put("/:short", (req, res) => {
     }
 });
 
-app.delete("/:short", (req, res) => {
+app.delete("/:short?*", (req, res) => {
     // The variable 'short' is set to the shortcut entered in the URI
     let short = req.params["short"];
 
