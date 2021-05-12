@@ -110,7 +110,8 @@ app.post("/create", (req, res) => {
         let url = Object.keys(links).find((k) => links[k] === link);
         res.send({ short: url });
     } else {
-        let name = Math.random().toString(16).substr(2, 8);
+        let name = req.body.short;
+        if (name == undefined) name = Math.random().toString(16).substr(2, 8);
         let token = Math.random().toString(16).substr(2, 15);
         
         // Generate a new shortcut name while there is already one existing with the same name
@@ -144,7 +145,7 @@ app.get("/:short", (req, res) => {
     // Use a shortcut
     let short = req.params["short"];
 
-    if (short.length == 0) {
+    if (short == undefined) {
         res.writeHead(301, { Location: "/site" });
         res.send();
     } else if (Object.keys(links).includes(short)) {
