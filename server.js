@@ -141,14 +141,16 @@ app.get("/links", (req, res) => {
     res.send(links);
 });
 
+app.get("/", (req, res) => {
+    res.writeHead(301, { Location: "/site" });
+    res.send();
+});
+
 app.get("/:short", (req, res) => {
     // Use a shortcut
     let short = req.params["short"];
-
-    if (short == undefined) {
-        res.writeHead(301, { Location: "/site" });
-        res.send();
-    } else if (Object.keys(links).includes(short)) {
+    
+    if (Object.keys(links).includes(short)) {
         res.writeHead(301, { Location: links[short] });
         res.send();
     } else {
