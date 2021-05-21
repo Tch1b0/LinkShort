@@ -17,6 +17,19 @@ input {
     width: 23em;
     font-size: larger;
 }
+#token-info {
+    font-size: 75%;
+}
+li#bar {
+    display: inline;
+    font-size: larger;
+}
+li#bar:nth-child(2) {
+    color: rgb(83, 83, 83);
+}
+li#bar:hover {
+    cursor: pointer;
+}
 
 .sideNote {
     color: gray;
