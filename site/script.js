@@ -2,17 +2,24 @@ function create(){
     let link = $("#link").val();
     let name = $("#name").val();
     $.post("create", {"link": link, "short": name}, (data) => {
+    
         let url = data["short"];
         let token = data["token"];
+        
         if (url == null){
             $("#res").html('<span style="color: red">Please enter a valid link</span>');
             $("#res-link").html("");
-        }else {
-            $("#res").html(`Your short is: <b>${url}</b>`);
-            $("#res-link").html(`<a href="https://ls.johannespour.de/${url}">https://ls.johannespour.de/${url}</a>`);
+            return;
+        }
+
+        $("#res").html(`Your short is: <b>${url}</b>`);
+        $("#res-link").html(`<a href="https://ls.johannespour.de/${url}">https://ls.johannespour.de/${url}</a>`);
+            
+        if (token !== undefined){
             $("#res-token").html(`Your token is: <b>${token}</b>`);
             $("#token-info").text("You can use your token to edit/delete your shortcut. So you should save it if you want to be able to do these things.")
         }
+        
     });
 }
 
