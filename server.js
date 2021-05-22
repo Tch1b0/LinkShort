@@ -103,8 +103,7 @@ app.post("/create", (req, res) => {
     // Check and correct the Link
     link = validateLink(link);
     if (link === false) {
-        res.writeHead(400);
-        res.send({ short: null });
+        res.send( {short: null} );
     } else if (Object.values(links).includes(link)) {
         // If shortcut already exists, send it
         let url = Object.keys(links).find((k) => links[k] === link);
