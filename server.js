@@ -21,9 +21,11 @@ function validateLink(link) {
         link = `http://${link}`;
     }
 
+    let re = /^https?:\/\/(([a-z0-9]){0,}\.)?([a-z0-9]){2,63}\.[a-z]{2,}(\/[\s\S]{0,}?){0,}$/gi;
+
     // Does the Link contain a dot?
     // If not then return false
-    return link.includes(".") ? link : false; 
+    return (re.exec(link) != null) ? link : false;
 }
 
 function invalidParameter(obj, res) {
