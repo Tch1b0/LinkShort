@@ -18,12 +18,14 @@ function validateLink(link) {
     // Does the Link already start with "http://" or "https://"?
     // If not then append it
     if (!link.startsWith("http://") && !link.startsWith("https://")) {
-        link = `http://${link}`;
+        link = `http://${link}`
     }
+
+    let re = /^https?:\/\/(([a-z0-9]){0,}\.)?([a-z0-9]){2,63}\.[a-z]{2,}(\/[\s\S]{0,}?){0,}$/gi
 
     // Does the Link contain a dot?
     // If not then return false
-    return link.includes(".") ? link : false; 
+    return (re.exec(link) != null) ? link : false
 }
 
 function invalidParameter(obj, res) {
@@ -102,6 +104,7 @@ app.post("/create", (req, res) => {
 
     // Check and correct the Link
     link = validateLink(link);
+    console.log(link)
     if (link === false) {
         res.send( {short: null} );
     } else if (Object.values(links).includes(link)) {
