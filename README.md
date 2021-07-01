@@ -23,3 +23,15 @@ Response:
 
 ### Use shortcut
 [https://ls.johannespour.de/17a76043](https://ls.johannespour.de/17a76043)
+
+## Host on your own
+```sh
+$ git clone https://github.com/Tch1b0/LinkShort
+
+$ cd ./Linkshort/
+
+$ docker-compose build
+
+$ docker-compose up -d
+```
+The service is now running on port `5002`.
