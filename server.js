@@ -1,5 +1,6 @@
 const express = require("express");
 var bodyParser = require("body-parser");
+const { invalidParameter, validateLink } = require("./src/utils");
 var app = express();
 
 var port = 5002; // The port of the webserver
@@ -11,32 +12,6 @@ app.use("/style.css", express.static("site/style.css")); // Static site
 app.use("/script.js", express.static("site/script.js")); //
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-function validateLink(link) {
-    // Does the Link really look like a valid link?
-
-    // Does the Link already start with "http://" or "https://"?
-    // If not then append it
-    if (!link.startsWith("http://") && !link.startsWith("https://")) {
-        link = `http://${link}`;
-    }
-
-    let re = /^https?:\/\/(([a-z0-9]){0,}\.)?([a-z0-9]){2,63}\.[a-z]{2,}(\/[\s\S]{0,}?){0,}$/gi;
-
-    // Does the Link contain a dot?
-    // If not then return false
-    return (re.exec(link) != null) ? link : false;
-}
-
-function invalidParameter(obj, res) {
-    if (obj == undefined) {
-        res.writeHead(400);
-        res.send();
-        return true;
-    } else {
-        return false;
-    }
-}
 
 app.put("/:short?*", (req, res) => {
     // The variable 'short' is set to the shortcut entered in the URI
