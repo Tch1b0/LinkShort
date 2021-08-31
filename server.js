@@ -15,11 +15,12 @@ linker.destination = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 linker.generateShort();
 linker.generateToken();
 
-lc.collection.push(linker);
+lc.add(linker);
+console.log(lc.collection);
 
 // Append initially\
 
-app.use("/site", express.static("site/index.html"));     //
+app.use("/site", express.static("site/index.html")); //
 app.use("/style.css", express.static("site/style.css")); // Static site
 app.use("/script.js", express.static("site/script.js")); //
 app.use(bodyParser.json());
@@ -32,11 +33,11 @@ app.put("/:short?*", (req, res) => {
     // Get the token from the json body
     let token = req.body.token;
     // Check if token is set
-    if (invalidParameter(token, res)) return; 
+    if (invalidParameter(token, res)) return;
 
-    if (short == undefined){
+    if (short == undefined) {
         // If the short wasn't entered in the URI it may be in the body of the request
-        short = req.body.short; 
+        short = req.body.short;
         if (invalidParameter(short, res)) return;
     }
 
@@ -47,9 +48,8 @@ app.put("/:short?*", (req, res) => {
         if (!link && invalidParameter(undefined, res)) return;
 
         lc.findByToken(token).short = short; // Link is added to the 'links' object
-        res.send({short: short}); // send the short
-    }
-    else {
+        res.send({ short: short }); // send the short
+    } else {
         res.writeHead(405);
         res.send(/*"Permission denied."*/);
     }
@@ -64,7 +64,7 @@ app.delete("/:short?*", (req, res) => {
     // Check if token is set
     if (invalidParameter(token, res)) return;
 
-    if (short == undefined){
+    if (short == undefined) {
         // If the short wasn't entered in the URI it may be in the body of the request
         short = req.body.short;
         if (invalidParameter(short, res)) return;
@@ -83,7 +83,7 @@ app.delete("/:short?*", (req, res) => {
 
 app.post("/create", (req, res) => {
     // Create a new shortcut
-    
+
     // Does the parameter "link" exist?
     var link = req.body.link;
 
@@ -92,7 +92,7 @@ app.post("/create", (req, res) => {
     // Check and correct the Link
     link = validateLink(link);
     if (link === false) {
-        res.send( {short: null} );
+        res.send({ short: null });
     } else if (lc.findByDestination(link) != undefined) {
         // If shortcut already exists, send it
         let url = lc.findByDestination(link).short;
@@ -102,14 +102,22 @@ app.post("/create", (req, res) => {
         let token;
         let linker = new Linker();
         linker.destination = link;
-        if (short != undefined) { linker.short = short }
+        if (short != undefined) {
+            linker.short = short;
+        }
 
         // Generate a new shortcut name while there is already one existing with the same name
-        while (lc.findByShort(short) == undefined || lc.findByShort(short).destination != link) {
+        while (
+            lc.findByShort(short) == undefined ||
+            lc.findByShort(short).destination != link
+        ) {
             short = linker.generateShort();
         }
         // Generate a new token while the same token already exists
-        while (lc.findByToken(token) == undefined || lc.findByShort(short).destination != link) {
+        while (
+            lc.findByToken(token) == undefined ||
+            lc.findByShort(short).destination != link
+        ) {
             token = linker.generateToken();
         }
 
@@ -137,10 +145,11 @@ app.get("/", (req, res) => {
 app.get("/:short", (req, res) => {
     // Use a shortcut
     let short = req.params["short"];
-    
-    let linker = lc.findByShort(short)
 
-    if (linker != undefined) {
+    let linker = lc.findByShort(short);
+    console.log(linker);
+
+    if (linker !== undefined) {
         res.writeHead(301, { Location: linker.short });
         res.send();
     } else {

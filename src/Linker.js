@@ -5,7 +5,7 @@ class Linker {
         this.token = undefined;
     }
     generateShort() {
-        let short = Math.random().toString(16).substr(2, 8); 
+        let short = Math.random().toString(16).substr(2, 8);
         this.short = short;
         return short;
     }
@@ -16,4 +16,4 @@ class Linker {
     }
 }
 
-module.exports = Linker
+module.exports = Linker;
