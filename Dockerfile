@@ -1,9 +1,9 @@
 FROM node:latest
 
 WORKDIR /app
-COPY /server.js ./server.js
-COPY /site ./site
+COPY ./src/ ./src
+COPY ./site/ ./site/
 
-RUN npm install express
+RUN npm install
 
-CMD exec node server.js > logs/LinkShort.log 2>&1
+CMD node dist/server.js
