@@ -7,3 +7,12 @@ services:
         ports:
             - "5002:5002"
         restart: always
+
+    redis_db:
+        image: redis:6.2.5-alpine
+        container_name: Linkshort-db
+        ports:
+            - "6379:6379"
+        restart: always
+        volumes:
+            - /docker/LinkShort:/data
