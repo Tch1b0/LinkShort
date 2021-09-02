@@ -5,7 +5,7 @@ import redis, { RedisError } from "redis";
  * A class containing all the `Linker` objects needed
  */
 export class LinkerCollection {
-    redisClient: redis.RedisClient;
+    redisClient!: redis.RedisClient;
 
     constructor(
         private useRedis: boolean = true,
@@ -94,13 +94,13 @@ export class LinkerCollection {
         this.save();
     }
 
-    safeCollection(): Array<object> {
-        let arr = [];
+    safeCollection(): object {
+        let obj = {};
         for (let i = 0; i < this.collection.length; i++) {
             let linker = this.collection[i];
-            arr.push({ [linker.short]: linker.destination });
+            obj[linker.short] = linker.destination;
         }
-        return arr;
+        return obj;
     }
 
     /**
@@ -118,10 +118,12 @@ export class LinkerCollection {
     load(): void {
         if (this.useRedis) {
             this.redisClient.get("collection", (_err, reply) => {
-                if (reply !== undefined && reply !== "" && reply !== null) {
-                    this.collection = JSON.parse(reply, (_key, val) => {
-                        return Linker.fromJson(val);
-                    });
+                if (reply !== undefined && reply !== null) {
+                    let jsonCollection: any = JSON.parse(reply);
+
+                    for (let obj of jsonCollection) {
+                        this.collection.push(Linker.fromJson(obj));
+                    }
                 }
             });
         }

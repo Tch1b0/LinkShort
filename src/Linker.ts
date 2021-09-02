@@ -2,7 +2,7 @@
  * This class represents A shortcut ressource
  */
 export class Linker {
-    short: string;
+    short!: string;
     token!: string;
 
     /**

@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const lc = new LinkerCollection(
     process.env.USE_DB === "true" || false,
-    6379,
+    Number(process.env.DB_PORT) || 6379,
     process.env.DB_HOSTNAME || "localhost"
 );
 
@@ -40,7 +40,12 @@ app.post("/create", (req, res) => {
         });
     } else {
         let linker = new Linker(destination);
-        short === undefined && linker.generateShort();
+        if (short === undefined) {
+            linker.generateShort();
+        } else {
+            linker.short = short;
+        }
+
         linker.generateToken();
 
         lc.add(linker);
@@ -61,7 +66,7 @@ app.get("/:short", (req, res) => {
 
     let linker = lc.findByShort(short);
     if (linker !== undefined) {
-        res.redirect(linker.destination);
+        res.redirect(301, linker.destination);
     } else {
         sendError(res, 404);
     }
@@ -114,6 +119,24 @@ app.delete("/:short", (req, res) => {
     res.status(200).send();
 });
 
+// prettier-ignore
+app.get("/:short/json", (req, res) => {
+    let short = req.params.short;
+
+    let linker = lc.findByShort(short)
+    if (linker === undefined) {
+        sendError(res, 404);
+        return;
+    }
+
+    res.send({
+        short: short,
+        destination: linker.destination
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Now listening on http://localhost:${PORT}`);
 });
+
+module.exports = app;
