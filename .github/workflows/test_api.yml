@@ -1,0 +1,16 @@
+name: Test API
+
+on: [push]
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.4.0
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test the API with Mocha
+        run: npm run test
