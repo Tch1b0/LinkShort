@@ -6,15 +6,18 @@ import bodyParser from "body-parser";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const lc = new LinkerCollection();
+const lc = new LinkerCollection(
+    process.env.USE_DB === "true" || false,
+    6379,
+    process.env.DB_HOSTNAME || "localhost"
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 lc.load();
 
 app.get("/", (_req, res) => {
-    res.writeHead(200);
-    res.send("Ok");
+    res.status(200).send("OK");
 });
 
 app.post("/create", (req, res) => {
@@ -28,7 +31,7 @@ app.post("/create", (req, res) => {
         return;
     }
 
-    res.writeHead(200);
+    res.status(200);
 
     let otherLinker = lc.findByDestination(destination);
     if (otherLinker !== undefined) {
@@ -37,7 +40,7 @@ app.post("/create", (req, res) => {
         });
     } else {
         let linker = new Linker(destination);
-        if (short === undefined) linker.generateShort();
+        short === undefined && linker.generateShort();
         linker.generateToken();
 
         lc.add(linker);
@@ -47,6 +50,68 @@ app.post("/create", (req, res) => {
             token: linker.token,
         });
     }
+});
+
+app.get("/links", (_req, res) => {
+    res.status(200).send(lc.safeCollection());
+});
+
+app.get("/:short", (req, res) => {
+    let short = req.params.short;
+
+    let linker = lc.findByShort(short);
+    if (linker !== undefined) {
+        res.redirect(linker.destination);
+    } else {
+        sendError(res, 404);
+    }
+});
+
+app.put("/:short", (req, res) => {
+    let short = req.params.short;
+    let token = getParamFromReq(req, "token");
+    let link = getParamFromReq(req, "link");
+
+    if (token === undefined) {
+        sendError(res, 401);
+        return;
+    }
+
+    let linker = lc.findByShort(short);
+    if (linker === undefined) {
+        sendError(res, 400);
+        return;
+    }
+
+    link = validateLink(link);
+    if (link === false) {
+        sendError(res, 400);
+        return;
+    }
+
+    let new_linker = new Linker(link, short, token);
+    lc.add(new_linker);
+
+    res.status(200).send();
+});
+
+app.delete("/:short", (req, res) => {
+    let short = req.params.short;
+    let token = getParamFromReq(req, "token");
+
+    if (token === undefined) {
+        sendError(res, 401);
+        return;
+    }
+
+    let linker = lc.findByShort(short);
+    if (linker === undefined) {
+        sendError(res, 400);
+    }
+
+    lc.removeByShort(short);
+
+    res.status(200).send();
 });
 
 app.listen(PORT, () => {

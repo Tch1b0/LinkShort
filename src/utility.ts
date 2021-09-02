@@ -39,16 +39,21 @@ export function sendError(res: any, errorCode: number): void {
     switch (errorCode) {
         case 400:
             text = "400 Bad Request - Some parameters were wrong or missing";
+            break;
         case 401:
             text =
                 "401 Unauthorized - You do not have the permissions to do this action";
+            break;
         case 404:
             text = "404 Not Found - No content found";
+            break;
         case 405:
             text =
                 "405 Method not allowed - You can not access this ressource with this request method";
+            break;
+        default:
+            text = "";
     }
 
-    res.writeHead(errorCode, text);
-    res.send();
+    res.status(errorCode).send(text);
 }
