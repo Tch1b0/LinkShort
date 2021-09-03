@@ -1,16 +1,22 @@
 version: "3.7"
 
 services:
-    ls:
-        build: .
-        container_name: LinkShort
-        ports: 
-            - "5002:5002"
+    redis_db:
+        image: redis
+        container_name: Linkshort-db
+        ports:
+            - "6379:6379"
         restart: always
         volumes:
-            - server-logs:/app/logs
+            - ./data:/data
 
-volumes: 
-    server-logs:
-        external: true  
-        name: server-logs
+    server:
+        build: .
+        container_name: LinkShort
+        ports:
+            - "5002:5002"
+        restart: always
+        depends_on:
+            - redis_db
+        links:
+            - "redis_db:redis_db"

@@ -1,9 +1,14 @@
 FROM node:latest
 
 WORKDIR /app
-COPY /server.js ./server.js
-COPY /site ./site
+COPY ./src/ ./src
+COPY ./package.json ./package.json
+COPY ./tsconfig.json ./tsconfig.json
+ENV USE_DB=true
+ENV PORT=5002
+ENV DB_HOSTNAME=redis_db
 
-RUN npm install express
+RUN npm install
+RUN npm run build
 
-CMD exec node server.js > logs/LinkShort.log 2>&1
+CMD node dist/index.js

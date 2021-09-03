@@ -1,4 +1,4 @@
-/node_modules
-/package-lock.json
-/package.json
-/logs/LinkShort.log
+node_modules/
+package-lock.json
+dist/
+data/
