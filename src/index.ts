@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { LinkerCollection } from "./LinkerCollection";
 import { Linker } from "./Linker";
 import { getParamFromReq, sendError, validateLink } from "./utility";
@@ -12,6 +13,7 @@ const lc = new LinkerCollection(
     process.env.DB_HOSTNAME || "localhost"
 );
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 lc.load();
