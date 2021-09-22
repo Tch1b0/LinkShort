@@ -16,6 +16,8 @@ $ git clone https://github.com/Tch1b0/LinkShort
 
 $ cd ./Linkshort/
 
+$ echo "REDIS_PASSWORD=<Your Password>" >> .env
+
 $ docker-compose build
 
 $ docker-compose up -d
