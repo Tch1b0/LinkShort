@@ -10,11 +10,18 @@ export class LinkerCollection {
     constructor(
         private useRedis: boolean = true,
         redisPort: number = 6379,
-        hostname: string = "localhost",
+        hostname: string = "127.0.0.1",
+        redisPassword: string | undefined = process.env.REDIS_PASSWORD,
         public collection: Linker[] = []
     ) {
         if (useRedis) {
-            this.redisClient = redis.createClient(redisPort, hostname);
+            console.log(process.env);
+            this.redisClient = redis.createClient(redisPort, hostname, {
+                host: hostname,
+                port: redisPort,
+                no_ready_check: true,
+                auth_pass: redisPassword,
+            });
         }
     }
 

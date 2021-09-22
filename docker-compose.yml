@@ -1,22 +1,25 @@
 version: "3.7"
 
 services:
-    redis_db:
-        image: redis
-        container_name: Linkshort-db
-        ports:
-            - "6379:6379"
-        restart: always
-        volumes:
-            - ./data:/data
+  redis_db:
+    image: redis:alpine
+    container_name: Linkshort-db
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - ./data:/data
+    command: redis-server --requirepass ${REDIS_PASSWORD}
 
-    server:
-        build: .
-        container_name: LinkShort
-        ports:
-            - "5002:5002"
-        restart: always
-        depends_on:
-            - redis_db
-        links:
-            - "redis_db:redis_db"
+  server:
+    build: .
+    container_name: LinkShort
+    ports:
+      - "5002:5002"
+    restart: always
+    depends_on:
+      - redis_db
+    environment:
+      - REDIS_PASSWORD
+    links:
+      - "redis_db:redis_db"
