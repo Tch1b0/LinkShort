@@ -24,7 +24,8 @@ app.get("/", (_req, res) => {
 
 app.post("/create", (req, res) => {
     let short = getParamFromReq(req, "short");
-    let destination = getParamFromReq(req, "link");
+    let destination =
+        getParamFromReq(req, "link") || getParamFromReq(req, "destination");
 
     if (destination !== undefined) {
         destination = validateLink(destination);
@@ -77,15 +78,16 @@ app.get("/:short", (req, res) => {
 app.put("/:short", (req, res) => {
     let short = req.params.short;
     let token = getParamFromReq(req, "token");
-    let link = getParamFromReq(req, "link");
+    let link =
+        getParamFromReq(req, "link") || getParamFromReq(req, "destination");
+    let linker = lc.findByShort(short);
 
-    if (token === undefined) {
+    if (token === undefined || token !== linker?.token) {
         sendError(res, 401);
         return;
     }
 
-    let linker = lc.findByShort(short);
-    if (linker === undefined) {
+    if (linker === undefined || link === undefined) {
         sendError(res, 400);
         return;
     }
@@ -105,13 +107,13 @@ app.put("/:short", (req, res) => {
 app.delete("/:short", (req, res) => {
     let short = req.params.short;
     let token = getParamFromReq(req, "token");
+    let linker = lc.findByShort(short);
 
-    if (token === undefined) {
+    if (token === undefined || token !== linker?.token) {
         sendError(res, 401);
         return;
     }
 
-    let linker = lc.findByShort(short);
     if (linker === undefined) {
         sendError(res, 400);
     }
