@@ -1,6 +1,6 @@
 # LinkShort
 
-![License Badge](https://img.shields.io/github/license/Tch1b0/LinkShort) ![Current Build](https://img.shields.io/github/workflow/status/Tch1b0/LinkShort/Test%20API)
+![License Badge](https://img.shields.io/github/license/Tch1b0/LinkShort) ![Current Build](https://img.shields.io/github/actions/workflow/status/Tch1b0/LinkShort/test_api.yml?branch=master&label=ci)
 
 This is a Link Shortner made with [express.js]("https://expressjs.com/de/") in Typescript.
 
